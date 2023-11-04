@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Speech-to-Text Recorder</title>
+</head>
+<body>
+    <h1>Speech-to-Text Recorder</h1>
+    <button id="startRecord">Start Recording</button>
+    <button id="stopRecord" disabled>Stop Recording</button>
+    <p id="status">Status: Idle</p>
+    <textarea id="transcription" rows="4" cols="50" readonly></textarea>
+
+    <script>
+        const startRecordButton = document.getElementById("startRecord");
+        const stopRecordButton = document.getElementById("stopRecord");
+        const status = document.getElementById("status");
+        const transcriptionTextArea = document.getElementById("transcription");
+
+        let recognition = new webkitSpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        startRecordButton.addEventListener("click", () => {
+            startRecordButton.disabled = true;
+            stopRecordButton.disabled = false;
+            status.textContent = "Status: Recording...";
+
+            recognition.start();
+        });
+
+        stopRecordButton.addEventListener("click", () => {
+            stopRecordButton.disabled = true;
+            startRecordButton.disabled = false;
+            status.textContent = "Status: Stopped";
+
+            recognition.stop();
+        });
+
+        recognition.onresult = (event) => {
+            const interimTranscript = event.results[event.results.length - 1][0].transcript;
+            transcriptionTextArea.value = interimTranscript;
+        };
+    </script>
+</body>
+</html>
